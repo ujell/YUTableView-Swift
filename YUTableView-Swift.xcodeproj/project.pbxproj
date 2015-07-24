@@ -16,7 +16,6 @@
 		E3002AB11B62AC0F00E2FA80 /* YUTableViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3002AAF1B62AC0F00E2FA80 /* YUTableViewNode.swift */; };
 		E312D9421B62D62100275A31 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E312D9411B62D62100275A31 /* CustomTableViewCell.swift */; };
 		E312D9441B62DBC500275A31 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E312D9431B62DBC500275A31 /* SettingsViewController.swift */; };
-		E3DA865B1B62E9C6002BE433 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E3002AA71B62ABDB00E2FA80 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,7 +141,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3DA865B1B62E9C6002BE433 /* Info.plist in Resources */,
 				E3002AA61B62ABDB00E2FA80 /* LaunchScreen.storyboard in Resources */,
 				E3002AA31B62ABDB00E2FA80 /* Assets.xcassets in Resources */,
 				E3002AA11B62ABDB00E2FA80 /* Main.storyboard in Resources */,

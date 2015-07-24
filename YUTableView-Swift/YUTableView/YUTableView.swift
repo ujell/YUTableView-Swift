@@ -42,6 +42,21 @@ class YUTableView: UITableView
     /** Removes other open items before opening a new one */
     var allowOnlyOneActiveNodeInSameLevel: Bool = false;
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder);
+        initializeDefaultValues ();
+    }
+    
+    required override init(frame: CGRect, style: UITableViewStyle) {
+        super.init(frame: frame, style: style);
+        initializeDefaultValues ();
+    }
+    
+    private func initializeDefaultValues () {
+        self.delegate = self;
+        self.dataSource = self;
+    }
+    
     func setDelegate (delegate: YUTableViewDelegate) {
         yuTableViewDelegate = delegate;
     }
@@ -53,19 +68,20 @@ class YUTableView: UITableView
         reloadData();
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        initializeDefaultValues ();
-    }
-
-    required override init(frame: CGRect, style: UITableViewStyle) {
-        super.init(frame: frame, style: style);
-        initializeDefaultValues ();
+    func selectNodeAtIndex (index: Int) {
+        let node = nodesToDisplay [index];
+        openNodeAtIndexRow(index);
+        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index, inSection: 0));
     }
     
-    private func initializeDefaultValues () {
-        self.delegate = self;
-        self.dataSource = self;
+    func selectNode (node: YUTableViewNode) {
+        var index = nodesToDisplay.indexOf(node);
+        if index == nil {
+            selectNode(node.getParent()!);
+            index = nodesToDisplay.indexOf(node);
+        }
+        openNodeAtIndexRow(index!);
+        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index!, inSection: 0));
     }
 }
 

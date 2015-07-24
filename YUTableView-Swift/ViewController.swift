@@ -16,9 +16,16 @@ class ViewController: UIViewController {
     var insertRowAnimation: UITableViewRowAnimation!;
     var deleteRowAnimation: UITableViewRowAnimation!;
     
+    var allNodes : [YUTableViewNode]!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.setNodes(createNodes());
+        setTableProperties();
+    }
+    
+    func setTableProperties () {
+        allNodes = createNodes();
+        tableView.setNodes(allNodes);
         tableView.setDelegate(self);
         tableView.allowOnlyOneActiveNodeInSameLevel = closeOtherNodes;
         tableView.insertRowAnimation = insertRowAnimation;
@@ -51,6 +58,14 @@ class ViewController: UIViewController {
             nodes.append (node);
         }
         return nodes;
+    }
+    
+    @IBAction func selectRandomNode() {
+        var selectedNode = allNodes.first?.getParent();
+        repeat {
+            selectedNode = selectedNode!.childNodes[Int(arc4random_uniform(UInt32(selectedNode!.childNodes.count)))];
+        } while arc4random_uniform(2) == 0 && selectedNode!.hasChildren();
+        tableView.selectNode (selectedNode!);
     }
 }
 

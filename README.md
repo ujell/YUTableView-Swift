@@ -69,6 +69,18 @@ tableView.insertRowAnimation = .Top;
 tableView.deleteRowAnimation = .Fade;
 ```
 
+###Selecting Rows Programatically 
+To select a row one of the "selectNodeAtIndex:"  or "selectNode:" methods can be used. 
+```Swift
+let tableView : YUTableView
+//...
+let someRandomNode = getRandomNode ();
+//...
+tableView.selectNode (someRandomNode);
+//...
+tableView.selectNodeAtIndex(4);
+```
+
 ###Animation completion
 You can set a block which will executed after animation was completed.
 ```Swift
