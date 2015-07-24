@@ -47,7 +47,7 @@ class YUTableView: UITableView
     }
     
     func setNodes (nodes: [YUTableViewNode]) {
-        rootNode = YUTableViewNode(subNodes: nodes);
+        rootNode = YUTableViewNode(childNodes: nodes);
         self.firstLevelNodes = nodes;
         self.nodesToDisplay = self.firstLevelNodes;
         reloadData();
@@ -104,7 +104,7 @@ extension YUTableView: UITableViewDelegate {
         yuTableViewDelegate.didSelectNode(node, indexPath: indexPath);
         if node.isActive {
             closeNodeAtIndexRow(indexPath.row);
-        } else if node.hasSubNodes() {
+        } else if node.hasChildren() {
             openNodeAtIndexRow(indexPath.row);
         }
     }
@@ -118,7 +118,7 @@ private extension YUTableView {
             closeNodeAtSameLevelWithNode(node, indexRow: indexRow);
             indexRow = nodesToDisplay.indexOf(node)!;
         }
-        if let newNodes = node.getSubNodes () {
+        if let newNodes = node.childNodes {
             nodesToDisplay.insert(newNodes, atIndex: indexRow + 1);
             let indexesToInsert = indexesFromRow(indexRow + 1, count: newNodes.count)!;
             updateTableRows(insertRows: indexesToInsert, removeRows: nil);
@@ -127,7 +127,7 @@ private extension YUTableView {
     }
 
     func closeNodeAtSameLevelWithNode (node: YUTableViewNode, indexRow: Int) {
-        if let siblings = node.getParent()?.getSubNodes() {
+        if let siblings = node.getParent()?.childNodes {
             if let activeNode = siblings.filter( { $0.isActive }).first {
                 closeNodeAtIndexRow (nodesToDisplay.indexOf(activeNode)!);
             }
@@ -136,18 +136,18 @@ private extension YUTableView {
     
     func closeNodeAtIndexRow (indexRow: Int ) {
         let node = nodesToDisplay [indexRow];
-        let numberOfDisplayedSubnodes = getNumberOfDisplayedSubnodesAndDeactivateEveryNode(node);
-        nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedSubnodes );
-        updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedSubnodes));
+        let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node);
+        nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedChildren );
+        updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren));
         node.isActive = false;
     }
     
-    func getNumberOfDisplayedSubnodesAndDeactivateEveryNode (node: YUTableViewNode) -> Int {
+    func getNumberOfDisplayedChildrenAndDeactivateEveryNode (node: YUTableViewNode) -> Int {
         var count = 0;
-        if let subNodes = node.getSubNodes() {
-            count += subNodes.count;
-            for node in subNodes.filter ({$0.isActive })  {
-                count += getNumberOfDisplayedSubnodesAndDeactivateEveryNode(node);
+        if let children = node.childNodes {
+            count += children.count;
+            for node in children.filter ({$0.isActive })  {
+                count += getNumberOfDisplayedChildrenAndDeactivateEveryNode(node);
                 node.isActive = false;
             }
         }

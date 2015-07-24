@@ -12,7 +12,6 @@ func ==(lhs: YUTableViewNode, rhs: YUTableViewNode) -> Bool {
 
 class YUTableViewNode: Equatable {
     private static var nextId: Int = 0;
-    private var subNodes: [YUTableViewNode]!;
     private var parent: YUTableViewNode!;
     private var nodeId: Int;
     
@@ -22,20 +21,27 @@ class YUTableViewNode: Equatable {
     - Warning: If you're using custom ".xib" file for your cell, you should register it before using it
     */
     var cellIdentifier: String!; // Don't forget register nib
-    /** Is subitems are displayed. YUTableView uses this and you probably don't need it. */
+    /** Children of this node */
+    var childNodes: [YUTableViewNode]! {
+        didSet {
+            setNodeAsParentOfChildren();
+        }
+    };
+    /** Is children are displayed. YUTableView uses this and you probably don't need it. */
     var isActive: Bool = false;
     
-    init (subNodes: [YUTableViewNode]? = nil, data: AnyObject? = nil, cellIdentifier: String = "") {
+    
+    init (childNodes: [YUTableViewNode]? = nil, data: AnyObject? = nil, cellIdentifier: String = "") {
         nodeId = YUTableViewNode.nextId++;
-        self.setSubNodes(subNodes);
+        self.childNodes = childNodes;
+        setNodeAsParentOfChildren();
         self.data = data;
         self.cellIdentifier = cellIdentifier == "" ? nil : cellIdentifier;
     }
     
-    private func setSubNodes (nodes: [YUTableViewNode]?) {
-        self.subNodes = nodes;
-        if self.subNodes != nil {
-            for node in self.subNodes {
+    private func setNodeAsParentOfChildren () {
+        if childNodes != nil {
+            for node in childNodes {
                 node.parent = self;
             }
         }
@@ -45,12 +51,8 @@ class YUTableViewNode: Equatable {
         return parent;
     }
     
-    func hasSubNodes () -> Bool {
-        return subNodes != nil && subNodes.count != 0
-    }
-    
-    func getSubNodes () -> [YUTableViewNode]? {
-        return subNodes;
+    func hasChildren() -> Bool {
+        return childNodes != nil && childNodes.count != 0
     }
     
 }
