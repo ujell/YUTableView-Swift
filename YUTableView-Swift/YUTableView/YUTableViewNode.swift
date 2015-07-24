@@ -15,6 +15,7 @@ class YUTableViewNode: Equatable {
     private var subNodes: [YUTableViewNode]!;
     private var parent: YUTableViewNode!;
     private var nodeId: Int;
+    
     /** Use this to set your custom data for the node. Like label names */
     var data: AnyObject!;
     /** Cell identifier of this node.

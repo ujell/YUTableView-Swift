@@ -10,16 +10,66 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var tableView: YUTableView!
+    
+    var closeOtherNodes: Bool!;
+    var insertRowAnimation: UITableViewRowAnimation!;
+    var deleteRowAnimation: UITableViewRowAnimation!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        tableView.setNodes(createNodes());
+        tableView.setDelegate(self);
+        tableView.allowOnlyOneActiveNodeInSameLevel = closeOtherNodes;
+        tableView.insertRowAnimation = insertRowAnimation;
+        tableView.deleteRowAnimation = deleteRowAnimation;
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func setTableViewSettings (closeOtherNodes closeOtherNodes: Bool, insertAnimation: UITableViewRowAnimation, deleteAnimation: UITableViewRowAnimation) {
+        self.closeOtherNodes = closeOtherNodes;
+        self.insertRowAnimation = insertAnimation;
+        self.deleteRowAnimation = deleteAnimation;
     }
-
-
+    
+    func createNodes () -> [YUTableViewNode] {
+        var nodes = [YUTableViewNode] ();
+        for i in 1..<11 {
+            var subNodes = [YUTableViewNode] ();
+            for j in 1...5 {
+                var subsubNodes = [YUTableViewNode] ();
+                for k in 1...3 {
+                    let node = YUTableViewNode (data: "\(i).\(j).\(k)", cellIdentifier: "BasicCell");
+                    subsubNodes.append(node);
+                }
+                let node = YUTableViewNode(subNodes: subsubNodes, data: ["img": "cat", "label": "\(i).\(j)"], cellIdentifier: "ComplexCell");
+                subNodes.append(node);
+            }
+            let node = YUTableViewNode(subNodes: subNodes, data: "\(i)", cellIdentifier: "BasicCell");
+            nodes.append (node);
+        }
+        return nodes;
+    }
 }
 
+extension ViewController: YUTableViewDelegate {
+    func setContentsOfCell(cell: UITableViewCell, node: YUTableViewNode) {
+        if let complexCell = cell as? CustomTableViewCell, let cellDic = node.data as? [String:String] {
+            complexCell.setLabel(cellDic["label"]!, andImage: cellDic["img"]!);
+        } else {
+            cell.textLabel!.text = node.data as? String;
+        }
+    }
+    func heightForNode(node: YUTableViewNode) -> CGFloat? {
+        if node.cellIdentifier == "ComplexCell" {
+            return 100.0;
+        }
+        return nil;
+    }
+    
+    func didSelectNode(node: YUTableViewNode, indexPath: NSIndexPath) {
+        if !node.hasSubNodes () {
+            let alert = UIAlertView(title: "Row Selected", message: "Label: \(node.data as! String)", delegate: nil, cancelButtonTitle: "OK");
+            alert.show();
+        }
+    }
+}

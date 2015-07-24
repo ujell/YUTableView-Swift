@@ -12,16 +12,16 @@ protocol YUTableViewDelegate {
     /**  Called inside "cellForRowAtIndexPath:" method. Edit your cell in this funciton. */
     func setContentsOfCell (cell: UITableViewCell, node: YUTableViewNode);
     /** Uses the returned value as cell height if implemented */
-    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat!;
+    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat?;
     /** Uses the returned value as cell height if heightForIndexPath is not implemented */
-    func heightForNode (node: YUTableViewNode) -> CGFloat!;
+    func heightForNode (node: YUTableViewNode) -> CGFloat?;
     /** Called whenever a node is selected. You should check if it's a leaf. */
     func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath);
 }
 
 extension YUTableViewDelegate {
-    func heightForNode (node: YUTableViewNode) -> CGFloat! { return nil; };
-    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat! { return nil; };
+    func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil; };
+    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil; };
     func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
 }
 
@@ -40,7 +40,7 @@ class YUTableView: UITableView
     var deleteRowAnimation: UITableViewRowAnimation = .Left;
     var animationCompetitionHandler: () -> Void = {};
     /** Removes other open items before opening a new one */
-    var allowOnlyOneActiveNodeInSameLevel: Bool = true;
+    var allowOnlyOneActiveNodeInSameLevel: Bool = false;
     
     func setDelegate (delegate: YUTableViewDelegate) {
         yuTableViewDelegate = delegate;
@@ -90,10 +90,10 @@ extension YUTableView: UITableViewDataSource {
 extension YUTableView: UITableViewDelegate {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if let height = yuTableViewDelegate.heightForIndexPath(indexPath) {
+        if let height = yuTableViewDelegate?.heightForIndexPath(indexPath)  {
             return height;
         }
-        if let height = yuTableViewDelegate.heightForNode(nodesToDisplay[indexPath.row]) {
+        if let height = yuTableViewDelegate?.heightForNode(nodesToDisplay[indexPath.row]) {
             return height;
         }
         return tableView.rowHeight;
