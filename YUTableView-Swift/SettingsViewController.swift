@@ -15,8 +15,8 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var insertRowAnimationButton: UIButton!
     @IBOutlet weak var deleteRowAnimationButton: UIButton!
     
-    var insertRowAnimation: UITableViewRowAnimation = .Left;
-    var deleteRowAnimation: UITableViewRowAnimation = .Right;
+    var insertRowAnimation: UITableViewRowAnimation = .Right;
+    var deleteRowAnimation: UITableViewRowAnimation = .Left;
     
     enum AnimationTarget {
         case Insert
