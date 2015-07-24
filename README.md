@@ -5,6 +5,7 @@ You can directly drag&drop **YUTableView** folder from demo to your project.
 
 #Requirements
 * Swift 2
+* Doesn't compatible with Objective-C. For Objective-C check [this](https://github.com/ujell/YUTableView) version. 
 
 #Usage
 ##Data Model
