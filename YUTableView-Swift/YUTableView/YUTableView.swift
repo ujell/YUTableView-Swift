@@ -150,12 +150,15 @@ private extension YUTableView {
         }
     }
     
-    func closeNodeAtIndexRow (indexRow: Int ) {
+    func closeNodeAtIndexRow (indexRow: Int, shouldReloadClosedRow: Bool = false ) {
         let node = nodesToDisplay [indexRow];
         let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node);
         nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedChildren );
         updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren));
         node.isActive = false;
+        if shouldReloadClosedRow {
+            self.reloadRowsAtIndexPaths([NSIndexPath(forRow: indexRow, inSection: 0)], withRowAnimation: .Fade)
+        }
     }
     
     func getNumberOfDisplayedChildrenAndDeactivateEveryNode (node: YUTableViewNode) -> Int {
