@@ -12,7 +12,7 @@ func ==(lhs: YUTableViewNode, rhs: YUTableViewNode) -> Bool {
 
 class YUTableViewNode: Equatable {
     private static var nextId: Int = 0;
-    private var parent: YUTableViewNode!;
+    private weak var parent: YUTableViewNode!;
     private var nodeId: Int;
     
     /** Use this to set your custom data for the node. Like label names */
