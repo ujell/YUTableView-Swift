@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol YUTableViewDelegate {
+public protocol YUTableViewDelegate {
     /**  Called inside "cellForRowAtIndexPath:" method. Edit your cell in this funciton. */
     func setContentsOfCell (cell: UITableViewCell, node: YUTableViewNode);
     /** Uses the returned value as cell height if implemented */
@@ -20,12 +20,12 @@ protocol YUTableViewDelegate {
 }
 
 extension YUTableViewDelegate {
-    func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil; };
-    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil; };
-    func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
+    public func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil; };
+    public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil; };
+    public func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
 }
 
-class YUTableView: UITableView
+public class YUTableView: UITableView
 {
     private var yuTableViewDelegate : YUTableViewDelegate!;
 
@@ -34,20 +34,20 @@ class YUTableView: UITableView
     private var nodesToDisplay: [YUTableViewNode]!;
     
     /** If "YUTableViewNode"s don't have individual identifiers, this one is used */
-    var defaultCellIdentifier: String!;
+    public var defaultCellIdentifier: String!;
 
-    var insertRowAnimation: UITableViewRowAnimation = .Right;
-    var deleteRowAnimation: UITableViewRowAnimation = .Left;
-    var animationCompetitionHandler: () -> Void = {};
+    public var insertRowAnimation: UITableViewRowAnimation = .Right;
+    public var deleteRowAnimation: UITableViewRowAnimation = .Left;
+    public var animationCompetitionHandler: () -> Void = {};
     /** Removes other open items before opening a new one */
-    var allowOnlyOneActiveNodeInSameLevel: Bool = false;
+    public var allowOnlyOneActiveNodeInSameLevel: Bool = false;
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
         initializeDefaultValues ();
     }
     
-    required override init(frame: CGRect, style: UITableViewStyle) {
+    public required override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style);
         initializeDefaultValues ();
     }
@@ -57,24 +57,24 @@ class YUTableView: UITableView
         self.dataSource = self;
     }
     
-    func setDelegate (delegate: YUTableViewDelegate) {
+    public func setDelegate (delegate: YUTableViewDelegate) {
         yuTableViewDelegate = delegate;
     }
     
-    func setNodes (nodes: [YUTableViewNode]) {
+    public func setNodes (nodes: [YUTableViewNode]) {
         rootNode = YUTableViewNode(childNodes: nodes);
         self.firstLevelNodes = nodes;
         self.nodesToDisplay = self.firstLevelNodes;
         reloadData();
     }
     
-    func selectNodeAtIndex (index: Int) {
+    public func selectNodeAtIndex (index: Int) {
         let node = nodesToDisplay [index];
         openNodeAtIndexRow(index);
         yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index, inSection: 0));
     }
     
-    func selectNode (node: YUTableViewNode) {
+    public func selectNode (node: YUTableViewNode) {
         var index = nodesToDisplay.indexOf(node);
         if index == nil {
             selectNode(node.getParent()!);
@@ -87,14 +87,14 @@ class YUTableView: UITableView
 
 extension YUTableView: UITableViewDataSource {
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if nodesToDisplay != nil {
             return nodesToDisplay.count;
         }
         return 0;
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let node = nodesToDisplay[indexPath.row];
         let cellIdentifier = node.cellIdentifier != nil ? node.cellIdentifier : defaultCellIdentifier;
         let cell = self.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath);
@@ -105,7 +105,7 @@ extension YUTableView: UITableViewDataSource {
 
 extension YUTableView: UITableViewDelegate {
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if let height = yuTableViewDelegate?.heightForIndexPath(indexPath)  {
             return height;
         }
@@ -115,7 +115,7 @@ extension YUTableView: UITableViewDelegate {
         return tableView.rowHeight;
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let node = nodesToDisplay [indexPath.row];
         yuTableViewDelegate.didSelectNode(node, indexPath: indexPath);
         if node.isActive {
