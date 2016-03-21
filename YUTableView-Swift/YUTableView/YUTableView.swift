@@ -128,7 +128,8 @@ extension YUTableView: UITableViewDelegate {
 
 private extension YUTableView {
 
-    func openNodeAtIndexRow (var indexRow: Int) {
+    func openNodeAtIndexRow (indexRow: Int) {
+        var indexRow = indexRow
         let node = nodesToDisplay [indexRow]
         if allowOnlyOneActiveNodeInSameLevel {
             closeNodeAtSameLevelWithNode(node, indexRow: indexRow)
@@ -175,7 +176,7 @@ private extension YUTableView {
     
     func indexesFromRow (from: Int, count: Int) -> [NSIndexPath]? {
         var indexes = [NSIndexPath] ()
-        for var i = 0 ; i < count;  i++ {
+        for i in 0  ..< count {
             indexes.append(NSIndexPath(forRow: i + from, inSection: 0))
         }
         if (indexes.count == 0) { return nil }
@@ -205,7 +206,7 @@ private extension Array {
         var counter = 0
         for item in items {
             insert(item, atIndex: atIndex + counter)
-            counter++
+            counter += 1
         }
     }
     

@@ -32,7 +32,8 @@ public class YUTableViewNode: Equatable {
     
     
     public init (childNodes: [YUTableViewNode]? = nil, data: AnyObject? = nil, cellIdentifier: String = "") {
-        nodeId = YUTableViewNode.nextId++
+        YUTableViewNode.nextId += 1
+        nodeId = YUTableViewNode.nextId
         self.childNodes = childNodes
         setNodeAsParentOfChildren()
         self.data = data
