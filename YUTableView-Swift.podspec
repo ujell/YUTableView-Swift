@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "YUTableView-Swift"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "Adds expandable sub-menu support to UITableView."
   s.homepage     = "https://github.com/ujell/YUTableView-Swift"
   s.license      = { :type => "MIT"}
