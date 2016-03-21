@@ -10,78 +10,78 @@ import UIKit
 
 public protocol YUTableViewDelegate {
     /**  Called inside "cellForRowAtIndexPath:" method. Edit your cell in this funciton. */
-    func setContentsOfCell (cell: UITableViewCell, node: YUTableViewNode);
+    func setContentsOfCell (cell: UITableViewCell, node: YUTableViewNode)
     /** Uses the returned value as cell height if implemented */
-    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat?;
+    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat?
     /** Uses the returned value as cell height if heightForIndexPath is not implemented */
-    func heightForNode (node: YUTableViewNode) -> CGFloat?;
+    func heightForNode (node: YUTableViewNode) -> CGFloat?
     /** Called whenever a node is selected. You should check if it's a leaf. */
-    func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath);
+    func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath)
 }
 
 extension YUTableViewDelegate {
-    public func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil; };
-    public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil; };
+    public func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil }
+    public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil }
     public func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
 }
 
 public class YUTableView: UITableView
 {
-    private var yuTableViewDelegate : YUTableViewDelegate!;
+    private var yuTableViewDelegate : YUTableViewDelegate!
 
-    private var firstLevelNodes: [YUTableViewNode]!;
-    private var rootNode : YUTableViewNode!;
-    private var nodesToDisplay: [YUTableViewNode]!;
+    private var firstLevelNodes: [YUTableViewNode]!
+    private var rootNode : YUTableViewNode!
+    private var nodesToDisplay: [YUTableViewNode]!
     
     /** If "YUTableViewNode"s don't have individual identifiers, this one is used */
-    public var defaultCellIdentifier: String!;
+    public var defaultCellIdentifier: String!
 
-    public var insertRowAnimation: UITableViewRowAnimation = .Right;
-    public var deleteRowAnimation: UITableViewRowAnimation = .Left;
-    public var animationCompetitionHandler: () -> Void = {};
+    public var insertRowAnimation: UITableViewRowAnimation = .Right
+    public var deleteRowAnimation: UITableViewRowAnimation = .Left
+    public var animationCompetitionHandler: () -> Void = {}
     /** Removes other open items before opening a new one */
-    public var allowOnlyOneActiveNodeInSameLevel: Bool = false;
+    public var allowOnlyOneActiveNodeInSameLevel: Bool = false
     
     public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        initializeDefaultValues ();
+        super.init(coder: aDecoder)
+        initializeDefaultValues ()
     }
     
     public required override init(frame: CGRect, style: UITableViewStyle) {
-        super.init(frame: frame, style: style);
-        initializeDefaultValues ();
+        super.init(frame: frame, style: style)
+        initializeDefaultValues ()
     }
     
     private func initializeDefaultValues () {
-        self.delegate = self;
-        self.dataSource = self;
+        self.delegate = self
+        self.dataSource = self
     }
     
     public func setDelegate (delegate: YUTableViewDelegate) {
-        yuTableViewDelegate = delegate;
+        yuTableViewDelegate = delegate
     }
     
     public func setNodes (nodes: [YUTableViewNode]) {
-        rootNode = YUTableViewNode(childNodes: nodes);
-        self.firstLevelNodes = nodes;
-        self.nodesToDisplay = self.firstLevelNodes;
-        reloadData();
+        rootNode = YUTableViewNode(childNodes: nodes)
+        self.firstLevelNodes = nodes
+        self.nodesToDisplay = self.firstLevelNodes
+        reloadData()
     }
     
     public func selectNodeAtIndex (index: Int) {
-        let node = nodesToDisplay [index];
-        openNodeAtIndexRow(index);
-        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index, inSection: 0));
+        let node = nodesToDisplay [index]
+        openNodeAtIndexRow(index)
+        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index, inSection: 0))
     }
     
     public func selectNode (node: YUTableViewNode) {
-        var index = nodesToDisplay.indexOf(node);
+        var index = nodesToDisplay.indexOf(node)
         if index == nil {
-            selectNode(node.getParent()!);
-            index = nodesToDisplay.indexOf(node);
+            selectNode(node.getParent()!)
+            index = nodesToDisplay.indexOf(node)
         }
-        openNodeAtIndexRow(index!);
-        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index!, inSection: 0));
+        openNodeAtIndexRow(index!)
+        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index!, inSection: 0))
     }
 }
 
@@ -89,17 +89,17 @@ extension YUTableView: UITableViewDataSource {
     
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if nodesToDisplay != nil {
-            return nodesToDisplay.count;
+            return nodesToDisplay.count
         }
-        return 0;
+        return 0
     }
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let node = nodesToDisplay[indexPath.row];
-        let cellIdentifier = node.cellIdentifier != nil ? node.cellIdentifier : defaultCellIdentifier;
-        let cell = self.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath);
-        yuTableViewDelegate?.setContentsOfCell(cell, node: node);
-        return cell;
+        let node = nodesToDisplay[indexPath.row]
+        let cellIdentifier = node.cellIdentifier != nil ? node.cellIdentifier : defaultCellIdentifier
+        let cell = self.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+        yuTableViewDelegate?.setContentsOfCell(cell, node: node)
+        return cell
     }
 }
 
@@ -107,21 +107,21 @@ extension YUTableView: UITableViewDelegate {
     
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if let height = yuTableViewDelegate?.heightForIndexPath(indexPath)  {
-            return height;
+            return height
         }
         if let height = yuTableViewDelegate?.heightForNode(nodesToDisplay[indexPath.row]) {
-            return height;
+            return height
         }
-        return tableView.rowHeight;
+        return tableView.rowHeight
     }
     
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let node = nodesToDisplay [indexPath.row];
-        yuTableViewDelegate.didSelectNode(node, indexPath: indexPath);
+        let node = nodesToDisplay [indexPath.row]
+        yuTableViewDelegate.didSelectNode(node, indexPath: indexPath)
         if node.isActive {
-            closeNodeAtIndexRow(indexPath.row);
+            closeNodeAtIndexRow(indexPath.row)
         } else if node.hasChildren() {
-            openNodeAtIndexRow(indexPath.row);
+            openNodeAtIndexRow(indexPath.row)
         }
     }
 }
@@ -129,83 +129,83 @@ extension YUTableView: UITableViewDelegate {
 private extension YUTableView {
 
     func openNodeAtIndexRow (var indexRow: Int) {
-        let node = nodesToDisplay [indexRow];
+        let node = nodesToDisplay [indexRow]
         if allowOnlyOneActiveNodeInSameLevel {
-            closeNodeAtSameLevelWithNode(node, indexRow: indexRow);
-            indexRow = nodesToDisplay.indexOf(node)!;
+            closeNodeAtSameLevelWithNode(node, indexRow: indexRow)
+            indexRow = nodesToDisplay.indexOf(node)!
         }
         if let newNodes = node.childNodes {
-            nodesToDisplay.insert(newNodes, atIndex: indexRow + 1);
-            let indexesToInsert = indexesFromRow(indexRow + 1, count: newNodes.count)!;
-            updateTableRows(insertRows: indexesToInsert, removeRows: nil);
-            node.isActive = true;
+            nodesToDisplay.insert(newNodes, atIndex: indexRow + 1)
+            let indexesToInsert = indexesFromRow(indexRow + 1, count: newNodes.count)!
+            updateTableRows(insertRows: indexesToInsert, removeRows: nil)
+            node.isActive = true
         }
     }
 
     func closeNodeAtSameLevelWithNode (node: YUTableViewNode, indexRow: Int) {
         if let siblings = node.getParent()?.childNodes {
             if let activeNode = siblings.filter( { $0.isActive }).first {
-                closeNodeAtIndexRow (nodesToDisplay.indexOf(activeNode)!);
+                closeNodeAtIndexRow (nodesToDisplay.indexOf(activeNode)!)
             }
         }
     }
     
     func closeNodeAtIndexRow (indexRow: Int, shouldReloadClosedRow: Bool = false ) {
-        let node = nodesToDisplay [indexRow];
-        let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node);
-        nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedChildren );
-        updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren));
-        node.isActive = false;
+        let node = nodesToDisplay [indexRow]
+        let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node)
+        nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedChildren )
+        updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren))
+        node.isActive = false
         if shouldReloadClosedRow {
             self.reloadRowsAtIndexPaths([NSIndexPath(forRow: indexRow, inSection: 0)], withRowAnimation: .Fade)
         }
     }
     
     func getNumberOfDisplayedChildrenAndDeactivateEveryNode (node: YUTableViewNode) -> Int {
-        var count = 0;
+        var count = 0
         if let children = node.childNodes {
-            count += children.count;
+            count += children.count
             for node in children.filter ({$0.isActive })  {
-                count += getNumberOfDisplayedChildrenAndDeactivateEveryNode(node);
-                node.isActive = false;
+                count += getNumberOfDisplayedChildrenAndDeactivateEveryNode(node)
+                node.isActive = false
             }
         }
-        return count;
+        return count
     }
     
     func indexesFromRow (from: Int, count: Int) -> [NSIndexPath]? {
-        var indexes = [NSIndexPath] ();
-        for var i = 0; i < count; i++ {
-            indexes.append(NSIndexPath(forRow: i + from, inSection: 0));
+        var indexes = [NSIndexPath] ()
+        for var i = 0 ; i < count;  i++ {
+            indexes.append(NSIndexPath(forRow: i + from, inSection: 0))
         }
-        if (indexes.count == 0) { return nil; }
-        return indexes;
+        if (indexes.count == 0) { return nil }
+        return indexes
     }
 
     func updateTableRows ( insertRows indexesToInsert: [NSIndexPath]? = nil, removeRows indexesToRemove: [NSIndexPath]? = nil) {
-        CATransaction.begin();
+        CATransaction.begin()
         CATransaction.setCompletionBlock { () -> Void in
-            self.animationCompetitionHandler ();
-        };
-        self.beginUpdates();
+            self.animationCompetitionHandler ()
+        }
+        self.beginUpdates()
         if indexesToRemove != nil && indexesToRemove?.count > 0 {
-            self.deleteRowsAtIndexPaths(indexesToRemove!, withRowAnimation: self.deleteRowAnimation);
+            self.deleteRowsAtIndexPaths(indexesToRemove!, withRowAnimation: self.deleteRowAnimation)
         }
         if indexesToInsert != nil && indexesToInsert?.count > 0 {
-            self.insertRowsAtIndexPaths(indexesToInsert!, withRowAnimation: self.insertRowAnimation);
+            self.insertRowsAtIndexPaths(indexesToInsert!, withRowAnimation: self.insertRowAnimation)
         }
-        self.endUpdates();
-        CATransaction.commit();
+        self.endUpdates()
+        CATransaction.commit()
     }
     
 }
 
 private extension Array {
     mutating func insert (items: [Element], atIndex: Int) {
-        var counter = 0;
+        var counter = 0
         for item in items {
-            insert(item, atIndex: atIndex + counter);
-            counter++;
+            insert(item, atIndex: atIndex + counter)
+            counter++
         }
     }
     

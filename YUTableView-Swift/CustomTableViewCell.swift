@@ -18,8 +18,8 @@ class CustomTableViewCell: UITableViewCell {
     }
 
     func setLabel (text: String, andImage imageName: String) {
-        label.text = text;
-        img.image = UIImage(named: imageName);
+        label.text = text
+        img.image = UIImage(named: imageName)
     }
     
     override func setSelected(selected: Bool, animated: Bool) {
