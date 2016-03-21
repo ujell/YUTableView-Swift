@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => "MIT"}
   s.author       = { "yücel" => "yuceluzun@windowslive.com" }
   s.platform     = :ios, "8.0"
-  s.source       = { :git => "https://github.com/ujell/YUTableView-Swift.git", :tag => "1.0.1" }
+  s.source       = { :git => "https://github.com/ujell/YUTableView-Swift.git", :tag => "1.0.2" }
   s.source_files = "YUTableView-Swift/YUTableView/*.swift"
   s.requires_arc = true
 
