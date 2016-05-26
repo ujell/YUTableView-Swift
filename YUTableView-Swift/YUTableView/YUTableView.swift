@@ -17,12 +17,19 @@ public protocol YUTableViewDelegate {
     func heightForNode (node: YUTableViewNode) -> CGFloat?
     /** Called whenever a node is selected. You should check if it's a leaf. */
     func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath)
+    /** Determines if swipe actions should be shown */
+    func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool
+    /** Called when a node is removed with a swipe */
+    func didRemovedNode (node: YUTableViewNode, indexPath: NSIndexPath)
+    
 }
 
 extension YUTableViewDelegate {
     public func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil }
     public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil }
     public func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
+    public func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool { return false }
+    public func didRemovedNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
 }
 
 public class YUTableView: UITableView
@@ -100,6 +107,21 @@ extension YUTableView: UITableViewDataSource {
         let cell = self.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
         yuTableViewDelegate?.setContentsOfCell(cell, node: node)
         return cell
+    }
+    
+    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if let canEdit = yuTableViewDelegate?.canEditNode(nodesToDisplay[indexPath.row], indexPath: indexPath) {
+            return canEdit;
+        }
+        return false;
+    }
+    
+    public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            let node = nodesToDisplay[indexPath.row]
+            removeNodeAtIndexPath (indexPath)
+            yuTableViewDelegate?.didRemovedNode(node, indexPath: indexPath)
+        } 
     }
 }
 
@@ -197,6 +219,14 @@ private extension YUTableView {
         }
         self.endUpdates()
         CATransaction.commit()
+    }
+    
+    func removeNodeAtIndexPath (indexPath: NSIndexPath) {
+        if nodesToDisplay[indexPath.row].isActive {
+            closeNodeAtIndexRow(indexPath.row)
+        }
+        nodesToDisplay.removeAtIndex(indexPath.row)
+        updateTableRows(removeRows: [indexPath])
     }
     
 }
