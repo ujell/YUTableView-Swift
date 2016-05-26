@@ -20,7 +20,7 @@ public protocol YUTableViewDelegate {
     /** Determines if swipe actions should be shown */
     func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool
     /** Called when a node is removed with a swipe */
-    func didRemovedNode (node: YUTableViewNode, indexPath: NSIndexPath)
+    func didRemoveNode (node: YUTableViewNode, indexPath: NSIndexPath)
     
 }
 
@@ -29,7 +29,7 @@ extension YUTableViewDelegate {
     public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil }
     public func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
     public func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool { return false }
-    public func didRemovedNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
+    public func didRemoveNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
 }
 
 public class YUTableView: UITableView
@@ -120,9 +120,10 @@ extension YUTableView: UITableViewDataSource {
         if editingStyle == .Delete {
             let node = nodesToDisplay[indexPath.row]
             removeNodeAtIndexPath (indexPath)
-            yuTableViewDelegate?.didRemovedNode(node, indexPath: indexPath)
+            yuTableViewDelegate?.didRemoveNode(node, indexPath: indexPath)
         } 
     }
+    
 }
 
 extension YUTableView: UITableViewDelegate {
