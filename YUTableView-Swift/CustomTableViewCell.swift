@@ -17,12 +17,12 @@ class CustomTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    func setLabel (text: String, andImage imageName: String) {
+    func setLabel (_ text: String, andImage imageName: String) {
         label.text = text
         img.image = UIImage(named: imageName)
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
 

@@ -35,7 +35,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func setTableViewSettings (closeOtherNodes closeOtherNodes: Bool, insertAnimation: UITableViewRowAnimation, deleteAnimation: UITableViewRowAnimation) {
+    func setTableViewSettings (closeOtherNodes: Bool, insertAnimation: UITableViewRowAnimation, deleteAnimation: UITableViewRowAnimation) {
         self.closeOtherNodes = closeOtherNodes
         self.insertRowAnimation = insertAnimation
         self.deleteRowAnimation = deleteAnimation
@@ -70,21 +70,21 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: YUTableViewDelegate {
-    func setContentsOfCell(cell: UITableViewCell, node: YUTableViewNode) {
+    func setContentsOfCell(_ cell: UITableViewCell, node: YUTableViewNode) {
         if let customCell = cell as? CustomTableViewCell, let cellDic = node.data as? [String:String] {
             customCell.setLabel(cellDic["label"]!, andImage: cellDic["img"]!)
         } else {
             cell.textLabel!.text = node.data as? String
         }
     }
-    func heightForNode(node: YUTableViewNode) -> CGFloat? {
+    func heightForNode(_ node: YUTableViewNode) -> CGFloat? {
         if node.cellIdentifier == "ComplexCell" {
             return 100.0
         }
         return nil
     }
     
-    func didSelectNode(node: YUTableViewNode, indexPath: NSIndexPath) {
+    func didSelectNode(_ node: YUTableViewNode, indexPath: IndexPath) {
         if !node.hasChildren () {
             let alert = UIAlertView(title: "Row Selected", message: "Label: \(node.data as! String)", delegate: nil, cancelButtonTitle: "OK")
             alert.show()
