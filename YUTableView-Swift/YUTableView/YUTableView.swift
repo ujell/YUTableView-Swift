@@ -34,11 +34,11 @@ extension YUTableViewDelegate {
 
 public class YUTableView: UITableView
 {
-    private var yuTableViewDelegate : YUTableViewDelegate!
+    fileprivate var yuTableViewDelegate : YUTableViewDelegate!
 
-    private var firstLevelNodes: [YUTableViewNode]!
-    private var rootNode : YUTableViewNode!
-    private var nodesToDisplay: [YUTableViewNode]!
+    fileprivate var firstLevelNodes: [YUTableViewNode]!
+    fileprivate var rootNode : YUTableViewNode!
+    fileprivate var nodesToDisplay: [YUTableViewNode]!
     
     /** If "YUTableViewNode"s don't have individual identifiers, this one is used */
     public var defaultCellIdentifier: String!
@@ -212,10 +212,10 @@ private extension YUTableView {
             self.animationCompetitionHandler ()
         }
         self.beginUpdates()
-        if indexesToRemove != nil && indexesToRemove?.count > 0 {
+        if indexesToRemove != nil && indexesToRemove!.count > 0 {
             self.deleteRows(at: indexesToRemove!, with: self.deleteRowAnimation)
         }
-        if indexesToInsert != nil && indexesToInsert?.count > 0 {
+        if indexesToInsert != nil && indexesToInsert!.count > 0 {
             self.insertRows(at: indexesToInsert!, with: self.insertRowAnimation)
         }
         self.endUpdates()

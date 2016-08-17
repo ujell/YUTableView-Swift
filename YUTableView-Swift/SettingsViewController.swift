@@ -31,12 +31,11 @@ class SettingsViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let destination = segue.destinationViewController as? ViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? ViewController {
             destination.setTableViewSettings(closeOtherNodes: otherNodesSwitch.isOn, insertAnimation: insertRowAnimation, deleteAnimation: deleteRowAnimation)
         }
     }
-
     
     @IBAction func insertRowAnimationButtonTouched(_ sender: AnyObject) {
         let actionSheet = UIAlertController (title: "Insert Row Animation", message: nil, preferredStyle: .actionSheet)
