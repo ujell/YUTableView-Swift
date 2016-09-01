@@ -37,7 +37,13 @@ public class YUTableView: UITableView
     fileprivate var yuTableViewDelegate : YUTableViewDelegate!
 
     fileprivate var firstLevelNodes: [YUTableViewNode]!
-    fileprivate var rootNode : YUTableViewNode!
+    fileprivate var rootNode : YUTableViewNode! {
+        willSet {
+            if rootNode != nil {
+                disableNodeAndChildNodes(rootNode)
+            }
+        }
+    }
     fileprivate var nodesToDisplay: [YUTableViewNode]!
     
     /** If "YUTableViewNode"s don't have individual identifiers, this one is used */
@@ -230,6 +236,12 @@ private extension YUTableView {
         updateTableRows(removeRows: [indexPath])
     }
     
+    func disableNodeAndChildNodes (_ node: YUTableViewNode) {
+        node.isActive = false
+        for child in node.childNodes ?? [YUTableViewNode]() {
+            disableNodeAndChildNodes(child)
+        }
+    }
 }
 
 private extension Array {
