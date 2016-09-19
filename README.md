@@ -1,10 +1,8 @@
 YUTableView adds expandable sub-menu support to UITableView.
 
-If you are using Swift 3, you can check the Swift 3 [branch](https://github.com/ujell/YUTableView-Swift/tree/Swift3).
-
 #Installation
 ## CocoaPods
-Add `pod 'YUTableView-Swift', :git=> 'https://github.com/ujell/YUTableView-Swift.git', :branch => 'Swift3'` to your podfile. Right now Xcode 8 asks for updating the code, just follow the steps, it fixes cocoapod related files. 
+Just add `pod 'YUTableView-Swift'` to your `Podfile`
 
 ##Manual
 You can directly drag&drop **YUTableView** folder from demo to your project.
