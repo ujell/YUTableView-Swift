@@ -4,13 +4,13 @@ If you are using Swift 3, you can check the Swift 3 [branch](https://github.com/
 
 #Installation
 ## CocoaPods
-Just add `pod 'YUTableView-Swift'` to your `Podfile`
+Add `pod 'YUTableView-Swift', :git=> 'https://github.com/ujell/YUTableView-Swift.git', :branch => 'Swift3'` to your podfile. Right now Xcode 8 asks for updating the code, just follow the steps, it fixes cocoapod related files. 
 
 ##Manual
 You can directly drag&drop **YUTableView** folder from demo to your project.
 
 #Requirements
-* Swift 2
+* Swift 3
 * Doesn't compatible with Objective-C. For Objective-C check [this](https://github.com/ujell/YUTableView) version. 
 
 #Usage
@@ -41,7 +41,7 @@ func setTableProperties () {
     // Other stuf...
 }
 
-func didSelectNode(node: YUTableViewNode, indexPath: NSIndexPath) {
+func didSelectNode(_ node: YUTableViewNode, indexPath: NSIndexPath) {
   // Do something with node or indexPath...
 }
  ```
@@ -49,13 +49,13 @@ func didSelectNode(node: YUTableViewNode, indexPath: NSIndexPath) {
 ###Different cell heights
 "YUTableViewDelegate" has "heightForIndexPath:" and "heightForNode:" methods to provide different cell heights.
 ```Swift
-func heightForNode(node: YUTableViewNode) -> CGFloat? {
+func heightForNode(_ node: YUTableViewNode) -> CGFloat? {
     if node.cellIdentifier == "ComplexCell" {
         return 100.0;
     }
     return nil;
 }
-func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? {
+func heightForIndexPath (_ indexPath: NSIndexPath) -> CGFloat? {
     if indexPath.row == 5 {
         return 100.0;
     }
@@ -100,7 +100,7 @@ tableView.animationCompetitionHandler = {
 ##Cells
 You must implement "setContentsOfCell:node:" method of YUTableViewDelegate to edit cells.
 ```Swift
-func setContentsOfCell(cell: UITableViewCell, node: YUTableViewNode) {
+func setContentsOfCell(_ cell: UITableViewCell, node: YUTableViewNode) {
     if let customCell = cell as? CustomTableViewCell, let cellDic = node.data as? [String:String] {
         customCell.setLabel(cellDic["label"]!, andImage: cellDic["img"]!);
     } else {

@@ -10,31 +10,31 @@ import UIKit
 
 public protocol YUTableViewDelegate {
     /**  Called inside "cellForRowAtIndexPath:" method. Edit your cell in this funciton. */
-    func setContentsOfCell (cell: UITableViewCell, node: YUTableViewNode)
+    func setContentsOfCell (_ cell: UITableViewCell, node: YUTableViewNode)
     /** Uses the returned value as cell height if implemented */
-    func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat?
+    func heightForIndexPath (_ indexPath: IndexPath) -> CGFloat?
     /** Uses the returned value as cell height if heightForIndexPath is not implemented */
-    func heightForNode (node: YUTableViewNode) -> CGFloat?
+    func heightForNode (_ node: YUTableViewNode) -> CGFloat?
     /** Called whenever a node is selected. You should check if it's a leaf. */
-    func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath)
+    func didSelectNode (_ node: YUTableViewNode, indexPath: IndexPath)
     /** Determines if swipe actions should be shown */
-    func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool
+    func canEditNode (_ node: YUTableViewNode, indexPath: IndexPath) -> Bool
     /** Called when a node is removed with a swipe */
-    func didRemoveNode (node: YUTableViewNode, indexPath: NSIndexPath)
+    func didRemoveNode (_ node: YUTableViewNode, indexPath: IndexPath)
     
 }
 
 extension YUTableViewDelegate {
-    public func heightForNode (node: YUTableViewNode) -> CGFloat? { return nil }
-    public func heightForIndexPath (indexPath: NSIndexPath) -> CGFloat? { return nil }
-    public func didSelectNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
-    public func canEditNode (node: YUTableViewNode, indexPath: NSIndexPath) -> Bool { return false }
-    public func didRemoveNode (node: YUTableViewNode, indexPath: NSIndexPath) {}
+    public func heightForNode (_ node: YUTableViewNode) -> CGFloat? { return nil }
+    public func heightForIndexPath (_ indexPath: IndexPath) -> CGFloat? { return nil }
+    public func didSelectNode (_ node: YUTableViewNode, indexPath: IndexPath) {}
+    public func canEditNode (_ node: YUTableViewNode, indexPath: IndexPath) -> Bool { return false }
+    public func didRemoveNode (_ node: YUTableViewNode, indexPath: IndexPath) {}
 }
 
 public class YUTableView: UITableView
 {
-    private var yuTableViewDelegate : YUTableViewDelegate!
+    fileprivate var yuTableViewDelegate : YUTableViewDelegate!
 
     private var firstLevelNodes: [YUTableViewNode]!
     private var rootNode : YUTableViewNode! {
@@ -49,8 +49,8 @@ public class YUTableView: UITableView
     /** If "YUTableViewNode"s don't have individual identifiers, this one is used */
     public var defaultCellIdentifier: String!
 
-    public var insertRowAnimation: UITableViewRowAnimation = .Right
-    public var deleteRowAnimation: UITableViewRowAnimation = .Left
+    public var insertRowAnimation: UITableViewRowAnimation = .right
+    public var deleteRowAnimation: UITableViewRowAnimation = .left
     public var animationCompetitionHandler: () -> Void = {}
     /** Removes other open items before opening a new one */
     public var allowOnlyOneActiveNodeInSameLevel: Bool = false
@@ -70,61 +70,61 @@ public class YUTableView: UITableView
         self.dataSource = self
     }
     
-    public func setDelegate (delegate: YUTableViewDelegate) {
+    public func setDelegate (_ delegate: YUTableViewDelegate) {
         yuTableViewDelegate = delegate
     }
     
-    public func setNodes (nodes: [YUTableViewNode]) {
+    public func setNodes (_ nodes: [YUTableViewNode]) {
         rootNode = YUTableViewNode(childNodes: nodes)
         self.firstLevelNodes = nodes
         self.nodesToDisplay = self.firstLevelNodes
         reloadData()
     }
     
-    public func selectNodeAtIndex (index: Int) {
+    public func selectNodeAtIndex (_ index: Int) {
         let node = nodesToDisplay [index]
         openNodeAtIndexRow(index)
-        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index, inSection: 0))
+        yuTableViewDelegate?.didSelectNode(node, indexPath: IndexPath(row: index, section: 0))
     }
     
-    public func selectNode (node: YUTableViewNode) {
-        var index = nodesToDisplay.indexOf(node)
+    public func selectNode (_ node: YUTableViewNode) {
+        var index = nodesToDisplay.index(of: node)
         if index == nil {
             selectNode(node.getParent()!)
-            index = nodesToDisplay.indexOf(node)
+            index = nodesToDisplay.index(of: node)
         }
         openNodeAtIndexRow(index!)
-        yuTableViewDelegate?.didSelectNode(node, indexPath: NSIndexPath(forRow: index!, inSection: 0))
+        yuTableViewDelegate?.didSelectNode(node, indexPath: IndexPath(row: index!, section: 0))
     }
 }
 
 extension YUTableView: UITableViewDataSource {
     
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if nodesToDisplay != nil {
             return nodesToDisplay.count
         }
         return 0
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let node = nodesToDisplay[indexPath.row]
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let node = nodesToDisplay[(indexPath as NSIndexPath).row]
         let cellIdentifier = node.cellIdentifier != nil ? node.cellIdentifier : defaultCellIdentifier
-        let cell = self.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+        let cell = self.dequeueReusableCell(withIdentifier: cellIdentifier!, for: indexPath)
         yuTableViewDelegate?.setContentsOfCell(cell, node: node)
         return cell
     }
     
-    public func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        if let canEdit = yuTableViewDelegate?.canEditNode(nodesToDisplay[indexPath.row], indexPath: indexPath) {
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if let canEdit = yuTableViewDelegate?.canEditNode(nodesToDisplay[(indexPath as NSIndexPath).row], indexPath: indexPath) {
             return canEdit;
         }
         return false;
     }
     
-    public func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            let node = nodesToDisplay[indexPath.row]
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let node = nodesToDisplay[(indexPath as NSIndexPath).row]
             removeNodeAtIndexPath (indexPath)
             yuTableViewDelegate?.didRemoveNode(node, indexPath: indexPath)
         } 
@@ -134,35 +134,35 @@ extension YUTableView: UITableViewDataSource {
 
 extension YUTableView: UITableViewDelegate {
     
-    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let height = yuTableViewDelegate?.heightForIndexPath(indexPath)  {
             return height
         }
-        if let height = yuTableViewDelegate?.heightForNode(nodesToDisplay[indexPath.row]) {
+        if let height = yuTableViewDelegate?.heightForNode(nodesToDisplay[(indexPath as NSIndexPath).row]) {
             return height
         }
         return tableView.rowHeight
     }
     
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let node = nodesToDisplay [indexPath.row]
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let node = nodesToDisplay [(indexPath as NSIndexPath).row]
         yuTableViewDelegate.didSelectNode(node, indexPath: indexPath)
         if node.isActive {
-            closeNodeAtIndexRow(indexPath.row)
+            closeNodeAtIndexRow((indexPath as NSIndexPath).row)
         } else if node.hasChildren() {
-            openNodeAtIndexRow(indexPath.row)
+            openNodeAtIndexRow((indexPath as NSIndexPath).row)
         }
     }
 }
 
 private extension YUTableView {
 
-    func openNodeAtIndexRow (indexRow: Int) {
+    func openNodeAtIndexRow (_ indexRow: Int) {
         var indexRow = indexRow
         let node = nodesToDisplay [indexRow]
         if allowOnlyOneActiveNodeInSameLevel {
             closeNodeAtSameLevelWithNode(node, indexRow: indexRow)
-            indexRow = nodesToDisplay.indexOf(node)!
+            indexRow = nodesToDisplay.index(of: node)!
         }
         if let newNodes = node.childNodes {
             nodesToDisplay.insert(newNodes, atIndex: indexRow + 1)
@@ -172,26 +172,26 @@ private extension YUTableView {
         }
     }
 
-    func closeNodeAtSameLevelWithNode (node: YUTableViewNode, indexRow: Int) {
+    func closeNodeAtSameLevelWithNode (_ node: YUTableViewNode, indexRow: Int) {
         if let siblings = node.getParent()?.childNodes {
             if let activeNode = siblings.filter( { $0.isActive }).first {
-                closeNodeAtIndexRow (nodesToDisplay.indexOf(activeNode)!)
+                closeNodeAtIndexRow (nodesToDisplay.index(of: activeNode)!)
             }
         }
     }
     
-    func closeNodeAtIndexRow (indexRow: Int, shouldReloadClosedRow: Bool = false ) {
+    func closeNodeAtIndexRow (_ indexRow: Int, shouldReloadClosedRow: Bool = false ) {
         let node = nodesToDisplay [indexRow]
         let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node)
-        nodesToDisplay.removeRange(indexRow + 1...indexRow+numberOfDisplayedChildren )
+        nodesToDisplay.removeSubrange(indexRow + 1...indexRow+numberOfDisplayedChildren )
         updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren))
         node.isActive = false
         if shouldReloadClosedRow {
-            self.reloadRowsAtIndexPaths([NSIndexPath(forRow: indexRow, inSection: 0)], withRowAnimation: .Fade)
+            self.reloadRows(at: [IndexPath(row: indexRow, section: 0)], with: .fade)
         }
     }
     
-    func getNumberOfDisplayedChildrenAndDeactivateEveryNode (node: YUTableViewNode) -> Int {
+    func getNumberOfDisplayedChildrenAndDeactivateEveryNode (_ node: YUTableViewNode) -> Int {
         var count = 0
         if let children = node.childNodes {
             count += children.count
@@ -203,36 +203,36 @@ private extension YUTableView {
         return count
     }
     
-    func indexesFromRow (from: Int, count: Int) -> [NSIndexPath]? {
-        var indexes = [NSIndexPath] ()
+    func indexesFromRow (_ from: Int, count: Int) -> [IndexPath]? {
+        var indexes = [IndexPath] ()
         for i in 0  ..< count {
-            indexes.append(NSIndexPath(forRow: i + from, inSection: 0))
+            indexes.append(IndexPath(row: i + from, section: 0))
         }
         if (indexes.count == 0) { return nil }
         return indexes
     }
 
-    func updateTableRows ( insertRows indexesToInsert: [NSIndexPath]? = nil, removeRows indexesToRemove: [NSIndexPath]? = nil) {
+    func updateTableRows ( insertRows indexesToInsert: [IndexPath]? = nil, removeRows indexesToRemove: [IndexPath]? = nil) {
         CATransaction.begin()
         CATransaction.setCompletionBlock { () -> Void in
             self.animationCompetitionHandler ()
         }
         self.beginUpdates()
-        if indexesToRemove != nil && indexesToRemove?.count > 0 {
-            self.deleteRowsAtIndexPaths(indexesToRemove!, withRowAnimation: self.deleteRowAnimation)
+        if indexesToRemove != nil && indexesToRemove!.count > 0 {
+            self.deleteRows(at: indexesToRemove!, with: self.deleteRowAnimation)
         }
-        if indexesToInsert != nil && indexesToInsert?.count > 0 {
-            self.insertRowsAtIndexPaths(indexesToInsert!, withRowAnimation: self.insertRowAnimation)
+        if indexesToInsert != nil && indexesToInsert!.count > 0 {
+            self.insertRows(at: indexesToInsert!, with: self.insertRowAnimation)
         }
         self.endUpdates()
         CATransaction.commit()
     }
     
-    func removeNodeAtIndexPath (indexPath: NSIndexPath) {
-        if nodesToDisplay[indexPath.row].isActive {
-            closeNodeAtIndexRow(indexPath.row)
+    func removeNodeAtIndexPath (_ indexPath: IndexPath) {
+        if nodesToDisplay[(indexPath as NSIndexPath).row].isActive {
+            closeNodeAtIndexRow((indexPath as NSIndexPath).row)
         }
-        nodesToDisplay.removeAtIndex(indexPath.row)
+        nodesToDisplay.remove(at: (indexPath as NSIndexPath).row)
         updateTableRows(removeRows: [indexPath])
     }
     
@@ -245,10 +245,10 @@ private extension YUTableView {
 }
 
 private extension Array {
-    mutating func insert (items: [Element], atIndex: Int) {
+    mutating func insert (_ items: [Element], atIndex: Int) {
         var counter = 0
         for item in items {
-            insert(item, atIndex: atIndex + counter)
+            insert(item, at: atIndex + counter)
             counter += 1
         }
     }

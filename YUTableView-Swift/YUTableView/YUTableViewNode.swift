@@ -11,12 +11,12 @@ public func ==(lhs: YUTableViewNode, rhs: YUTableViewNode) -> Bool {
 }
 
 public class YUTableViewNode: Equatable {
-    private static var nextId: Int = 0
-    private weak var parent: YUTableViewNode!
-    private var nodeId: Int
+    fileprivate static var nextId: Int = 0
+    fileprivate weak var parent: YUTableViewNode!
+    fileprivate var nodeId: Int
     
     /** Use this to set your custom data for the node. Like label names */
-    public var data: AnyObject!
+    public var data: Any!
     /** Cell identifier of this node.
     - Warning: If you're using custom ".xib" file for your cell, you should register it before using it
     */
@@ -31,7 +31,7 @@ public class YUTableViewNode: Equatable {
     public var isActive: Bool = false
     
     
-    public init (childNodes: [YUTableViewNode]? = nil, data: AnyObject? = nil, cellIdentifier: String = "") {
+    public init (childNodes: [YUTableViewNode]? = nil, data: Any? = nil, cellIdentifier: String = "") {
         YUTableViewNode.nextId += 1
         nodeId = YUTableViewNode.nextId
         self.childNodes = childNodes
