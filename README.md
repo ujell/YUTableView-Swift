@@ -1,26 +1,26 @@
 YUTableView adds expandable sub-menu support to UITableView.
 
 If you are not using Swift 3 yet, please check legacy [branch](https://github.com/ujell/YUTableView-Swift/tree/LegacySwift).
-#Installation
+# Installation
 ## CocoaPods
 Just add `pod 'YUTableView-Swift'` to your `Podfile`
 
-##Manual
+## Manual
 You can directly drag&drop **YUTableView** folder from demo to your project.
 
-#Requirements
+# Requirements
 * Swift 3
-* Doesn't compatible with Objective-C. For Objective-C check [this](https://github.com/ujell/YUTableView) version. 
+* Does not compatible with Objective-C. For Objective-C check [this](https://github.com/ujell/YUTableView) version. 
 
-#Usage
-##Data Model
+# Usage
+## Data Model
 You must create a YUTableViewNode for all of your rows.
 
-###Properties
+### Properties
 * ```data```: This is where you store the custom data of the cell.
 * ```cellIdentifier```: The identifier of the cell. If you don't set cellIdentifier, default identifier (which is a property of **YUTableView**) will be used.
 
-###How to init
+### How to init
 ```Swift
 // Initializing node with data.
 let node = YUTableViewNode (data: "Label")
@@ -30,9 +30,9 @@ let node2 = YUTableViewNode (data: "Label", cellIdentifier: "Cell")
 YUTableViewNode (childNodes: [node, node2], data: "Parent")
 ```
 
-##Table
-##Usage of YUTableView
-###Being notified when user selected cell
+## Table
+## Usage of YUTableView
+### Being notified when user selected cell
 Your view controller should implement "YUTableViewDelegate" and you should call "setDelegate" method to set your delegate.
 ```Swift
 func setTableProperties () {
@@ -45,7 +45,7 @@ func didSelectNode(_ node: YUTableViewNode, indexPath: NSIndexPath) {
 }
  ```
 
-###Different cell heights
+### Different cell heights
 "YUTableViewDelegate" has "heightForIndexPath:" and "heightForNode:" methods to provide different cell heights.
 ```Swift
 func heightForNode(_ node: YUTableViewNode) -> CGFloat? {
@@ -64,7 +64,7 @@ func heightForIndexPath (_ indexPath: NSIndexPath) -> CGFloat? {
 
 YUTableView first checks "heightForNode:", if it returns nil (or didn't implemented) then checks "heightForIndexPath:". If both of them return nil (or didn't implemented) it just uses default row height.
 
-####Setting animation type
+#### Setting animation type
 ```Swift
 let tableView : YUTableView
 //...
@@ -74,7 +74,7 @@ tableView.insertRowAnimation = .Top;
 tableView.deleteRowAnimation = .Fade;
 ```
 
-###Selecting Rows Programatically 
+### Selecting Rows Programatically 
 To select a row one of the "selectNodeAtIndex:"  or "selectNode:" methods can be used. 
 ```Swift
 let tableView : YUTableView
@@ -86,7 +86,7 @@ tableView.selectNode (someRandomNode);
 tableView.selectNodeAtIndex(4);
 ```
 
-###Animation completion
+### Animation completion
 You can set a block which will executed after animation was completed.
 ```Swift
 let tableView : YUTableView
@@ -96,7 +96,7 @@ tableView.animationCompetitionHandler = {
 }
 ```
 
-##Cells
+## Cells
 You must implement "setContentsOfCell:node:" method of YUTableViewDelegate to edit cells.
 ```Swift
 func setContentsOfCell(_ cell: UITableViewCell, node: YUTableViewNode) {
