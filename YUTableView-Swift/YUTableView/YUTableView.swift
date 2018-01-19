@@ -96,6 +96,18 @@ public class YUTableView: UITableView
         openNodeAtIndexRow(index!)
         yuTableViewDelegate?.didSelectNode(node, indexPath: IndexPath(row: index!, section: 0))
     }
+    
+    public func closeAllNodes () {
+        for subNode in nodesToDisplay {
+            closeNode (subNode);
+        }
+    }
+    
+    public func closeNode (_ node: YUTableViewNode) {
+        if let index = nodesToDisplay.index(of: node) {
+            closeNodeAtIndexRow(index)
+        }
+    }
 }
 
 extension YUTableView: UITableViewDataSource {
@@ -183,21 +195,22 @@ private extension YUTableView {
     func closeNodeAtIndexRow (_ indexRow: Int, shouldReloadClosedRow: Bool = false ) {
         let node = nodesToDisplay [indexRow]
         let numberOfDisplayedChildren = getNumberOfDisplayedChildrenAndDeactivateEveryNode(node)
+        if (indexRow + 1 > indexRow+numberOfDisplayedChildren) { return }
         nodesToDisplay.removeSubrange(indexRow + 1...indexRow+numberOfDisplayedChildren )
         updateTableRows(removeRows: indexesFromRow(indexRow + 1, count: numberOfDisplayedChildren))
-        node.isActive = false
         if shouldReloadClosedRow {
             self.reloadRows(at: [IndexPath(row: indexRow, section: 0)], with: .fade)
         }
     }
     
     func getNumberOfDisplayedChildrenAndDeactivateEveryNode (_ node: YUTableViewNode) -> Int {
+        if !node.isActive { return 0 }
         var count = 0
+        node.isActive = false;
         if let children = node.childNodes {
             count += children.count
-            for node in children.filter ({$0.isActive })  {
-                count += getNumberOfDisplayedChildrenAndDeactivateEveryNode(node)
-                node.isActive = false
+            for child in children.filter ({$0.isActive })  {
+                count += getNumberOfDisplayedChildrenAndDeactivateEveryNode(child)
             }
         }
         return count
