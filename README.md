@@ -1,6 +1,6 @@
 YUTableView adds expandable sub-menu support to UITableView.
 
-If you are not using Swift 3 yet, please check legacy [branch](https://github.com/ujell/YUTableView-Swift/tree/LegacySwift).
+If you are still using Swift 2, please check legacy [branch](https://github.com/ujell/YUTableView-Swift/tree/LegacySwift).
 # Installation
 ## CocoaPods
 Just add `pod 'YUTableView-Swift'` to your `Podfile`
@@ -9,7 +9,7 @@ Just add `pod 'YUTableView-Swift'` to your `Podfile`
 You can directly drag&drop **YUTableView** folder from demo to your project.
 
 # Requirements
-* Swift 3
+* Swift 
 * Does not compatible with Objective-C. For Objective-C check [this](https://github.com/ujell/YUTableView) version. 
 
 # Usage
@@ -85,6 +85,8 @@ tableView.selectNode (someRandomNode);
 //...
 tableView.selectNodeAtIndex(4);
 ```
+
+Also "closeNode:" and "closeAllNodes" methods can be used to close deselect/close nodes.
 
 ### Animation completion
 You can set a block which will executed after animation was completed.
